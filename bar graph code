@@ -1,0 +1,76 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import glob
+import sys
+
+#df = pd.read_csv("A:/Python based/step2_output/usa300_part1.csv")
+# get data file names
+path =r'A:/Python based/step2_output'
+filenames = glob.glob(path + "/*.csv")
+
+dfs = []
+for filename in filenames:
+    dfs.append(pd.read_csv(filename))
+
+# Concatenate all data into one DataFrame
+big_frame = pd.concat(dfs, ignore_index=True)
+
+bcd = big_frame.groupby('university').url.nunique()
+#print bcd
+#print bcd.sort_values(inplace=True)
+sm = bcd.count()
+#print sm
+tot = bcd.sum()
+#print tot
+bd = []
+for i in range(sm):
+    bd.append(bcd[i])
+
+str =  big_frame.university.unique()
+#print str
+
+lst = list(big_frame.columns.values)[1:10]
+
+
+print "All Columns having [] and missing values : "
+grap = []
+for j in lst:
+    grap.append(j + " - " + np.str(((big_frame[j] == '[]').sum())+(big_frame[j]).isnull().sum()))
+#    print j + " "+ np.str((big_frame[j] == '[]').sum())
+#phn = big_frame.phone.isnull().values.sum()
+#print "Phone Numbers having [] and missing values : %s"%(phn)
+
+#print "Phone Numbers having [] and missing values : "+np.str(phn)
+
+
+cnt = []
+
+for k in lst:
+    cnt.append(((big_frame[k] == '[]').sum())+(big_frame[k]).isnull().sum())
+
+#print cnt
+#def somecalulation(x):
+#    return ((big_frame['phone'] == x).sum())
+
+#print ((big_frame['phone']).isnull().sum())
+x1 = lst
+y1 = cnt
+# now to plot the figure...
+plt.figure(figsize=(10, 5))
+#ax = grap.plot(kind='bar')
+print x1
+print y1
+cont = [1,2,3,4,5,6,7,8,9]
+ax = plt.bar(cont,y1,align="center")
+plt.xticks(cont, x1)
+
+racts = ax.patches
+# Now make some labels
+labeld = y1
+
+for rect, labels in zip(racts, labeld):
+    height = rect.get_height()
+    plt.text(rect.get_x() + rect.get_width()/4, height + 2, labels)
+
+plt.show()
